@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>CSS遗忘项 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#css">css</a>&nbsp;&#187;&nbsp;CSS遗忘项
+    <span class="updated">Updated&nbsp;
+      2017-04-05 22:25:11
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">CSS遗忘项</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#bg">bg 用图片做背景自适应屏幕</a></li>
+<li><a href="#ul-li">ul li 元素横排显示</a></li>
+<li><a href="#margin-padding">margin padding 区别</a></li>
+<li><a href="#icon">icon 圆形图标</a></li>
+<li><a href="#a">a 超链接变色</a></li>
+</ul>
+</div>
+<h2 id="bg">bg 用图片做背景自适应屏幕</h2>
+<p>如果采用<code>background-image</code>设置不是很理想, 即便设置了<code>background-position</code>和<code>background-size</code>以及<code>background-repeat</code>, 仍不能做到完美自适应屏幕。</p>
+<div class="hlcode"><pre><span class="nt">body</span><span class="p">{</span>
+    <span class="k">background-image</span><span class="o">:</span> <span class="sx">url(&#39;img/fake.jpg&#39;)</span><span class="p">;</span>
+    <span class="k">background-position</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
+    <span class="k">background-attachment</span><span class="o">:</span> <span class="k">fixed</span><span class="p">;</span>
+    <span class="k">background</span><span class="o">-</span><span class="k">size</span><span class="o">:</span> <span class="k">auto</span><span class="p">;</span>
+    <span class="k">background-repeat</span><span class="o">:</span> <span class="k">no-repeat</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>额外补充几个<code>background</code>属性：</p>
+<p><code>background-size: length|percentage|cover|contain;</code></p>
+<ul>
+<li>length    设置背景图像的高度和宽度。</li>
+<li>percentage以父元素的百分比来设置背景图像的宽度和高度</li>
+<li>cover     把背景图像扩展至足够大，以使背景图像完全覆盖背景区域。</li>
+<li>contain   把图像图像扩展至最大尺寸，以使其宽度和高度完全适应内容区域</li>
+</ul>
+<p><code>background-attachment: scroll|fixed|inherit;</code></p>
+<ul>
+<li>scroll    默认值。背景图像会随着页面其余部分的滚动而移动。</li>
+<li>fixed     当页面的其余部分滚动时，背景图像不会移动。</li>
+<li>inherit   规定应该从父元素继承 <code>background-attachment</code> 属性的设置。</li>
+</ul>
+<p><code>background-repeat: repeat|repeat-x|repeat-y|no-repeat|inherit;</code></p>
+<ul>
+<li>repeat    默认。背景图像将在垂直方向和水平方向重复。</li>
+<li>no-repeat 背景图像将仅显示一次。</li>
+<li>inherit   规定应该从父元素继承 <code>background-repeat</code> 属性的设置。</li>
+</ul>
+<p>所以可以采用div作为底层图层来填充, code如下：</p>
+<div class="hlcode"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;wb-bg&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;img/fake.jpg&quot;</span> <span class="na">class=</span><span class="s">&quot;bg-img&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span class="nt">body</span><span class="p">{</span>
+    <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nf">#wb-bg</span><span class="p">{</span>
+    <span class="k">position</span><span class="o">:</span> <span class="k">fixed</span><span class="p">;</span> 
+    <span class="k">width</span><span class="o">:</span><span class="m">100</span><span class="o">%</span><span class="p">;</span> 
+    <span class="k">height</span><span class="o">:</span><span class="m">100</span><span class="o">%</span><span class="p">;</span> 
+    <span class="k">z-index</span><span class="o">:-</span><span class="m">1</span>
+<span class="p">}</span>
+<span class="nc">.bg-img</span><span class="p">{</span>
+    <span class="k">height</span><span class="o">:</span> <span class="m">100</span><span class="o">%</span><span class="p">;</span> 
+    <span class="k">width</span><span class="o">:</span> <span class="m">100</span><span class="o">%</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="ul-li">ul li 元素横排显示</h2>
+<div class="hlcode"><pre><span class="nt">ul</span><span class="p">{</span>
+    <span class="k">list-style-type</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">li</span><span class="p">{</span>
+    <span class="k">list-style</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+    <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="margin-padding">margin padding 区别</h2>
+<blockquote>
+<p><code>margin</code>用来设置页面中一个元素所占空间的边缘到相邻元素之间的距离</p>
+</blockquote>
+<ul>
+<li>如果提供全部四个参数值，将按上－右－下－左的顺序作用于四边。</li>
+<li>如果只提供一个，将用于全部的四边。</li>
+<li>如果提供两个，第一个用于上－下，第二个用于左－右。</li>
+<li>如果提供三个，第一个用于上，第二个用于左－右，第三个用于下</li>
+</ul>
+<div class="hlcode"><pre><span class="nt">body</span><span class="p">{</span>
+    <span class="k">margin</span><span class="o">:</span> <span class="m">.5em</span> <span class="m">.5em</span> <span class="m">0</span> <span class="m">1.5em</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<blockquote>
+<p><code>padding</code>用来设置元素内容到元素边界的距离。</p>
+</blockquote>
+<ul>
+<li>如果提供全部四个参数值，将按上－右－下－左的顺序作用于四边。</li>
+<li>如果只提供一个，将用于全部的四条边。</li>
+<li>如果提供两个，第一个用于上－下，第二个用于左－右。</li>
+<li>如果提供三个，第一个用于上，第二个用于左－右，第三个用于下。</li>
+<li>内联对象要使用该属性，必须先设定对象的height或width属性，或者设定position属性为absolute。不允许负值。</li>
+</ul>
+<div class="hlcode"><pre><span class="nt">body</span><span class="p">{</span>
+    <span class="k">padding</span><span class="o">:</span> <span class="m">1em</span> <span class="m">.5em</span> <span class="m">.5em</span> <span class="m">1em</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="icon">icon 圆形图标</h2>
+<blockquote>
+<p><code>border-radius</code> 属性是一个简写属性，用于设置四个 <code>border-*-radius</code> 属性。</p>
+<p>用法：<code>border-radius: 1-4 length|% / 1-4 length|%;</code>, sample 参照下面两种写法。</p>
+</blockquote>
+<ul>
+<li>sample 1</li>
+</ul>
+<div class="hlcode"><pre><span class="nt">border-radius</span><span class="nd">:2em</span><span class="o">;</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span class="nt">border-top-left-radius</span><span class="nd">:2em</span><span class="o">;</span>
+<span class="nt">border-top-right-radius</span><span class="nd">:2em</span><span class="o">;</span>
+<span class="nt">border-bottom-right-radius</span><span class="nd">:2em</span><span class="o">;</span>
+<span class="nt">border-bottom-left-radius</span><span class="nd">:2em</span><span class="o">;</span>
+</pre></div>
+
+
+<ul>
+<li>sample 2</li>
+</ul>
+<div class="hlcode"><pre><span class="nt">border-radius</span><span class="o">:</span> <span class="nt">2em</span> <span class="nt">1em</span> <span class="nt">4em</span> <span class="o">/</span> <span class="nt">0</span><span class="nc">.5em</span> <span class="nt">3em</span><span class="o">;</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span class="nt">border-top-left-radius</span><span class="o">:</span> <span class="nt">2em</span> <span class="nt">0</span><span class="nc">.5em</span><span class="o">;</span>
+<span class="nt">border-top-right-radius</span><span class="o">:</span> <span class="nt">1em</span> <span class="nt">3em</span><span class="o">;</span>
+<span class="nt">border-bottom-right-radius</span><span class="o">:</span> <span class="nt">4em</span> <span class="nt">0</span><span class="nc">.5em</span><span class="o">;</span>
+<span class="nt">border-bottom-left-radius</span><span class="o">:</span> <span class="nt">1em</span> <span class="nt">3em</span><span class="o">;</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span class="nc">.icon</span><span class="p">{</span>
+    <span class="k">padding-top</span><span class="o">:</span> <span class="m">.5em</span><span class="p">;</span>
+    <span class="k">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+    <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="k">background</span><span class="o">-</span><span class="k">size</span><span class="o">:</span> <span class="m">96px</span> <span class="m">96px</span><span class="p">;</span>
+    <span class="k">height</span><span class="o">:</span> <span class="m">96px</span><span class="p">;</span>
+    <span class="k">width</span><span class="o">:</span> <span class="m">96px</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="a">a 超链接变色</h2>
+<ul>
+<li><code>a:link</code>, <code>a:hover</code>, <code>a:visited</code>, <code>a:active</code>这几个元素, 定义CSS时候的顺序不同, 也会直接导致链接显示的效果不同。</li>
+<li>鼠标经过的"未访问链接"同时拥有<code>a:link, a:hover</code>两种属性, 后面的属性会覆盖前面的属性定义；</li>
+<li>鼠标经过的"已访问链接"同时拥有<code>a:visited, a:hover</code>两种属性, 后面的属性会覆盖前面的属性定义；</li>
+<li>正确顺序是<code>a:link, a:visited, a:hover, a:active</code> 也可以解释成"爱恨原则" -&gt; (LoVe/HAte)</li>
+</ul>
+<p>PS: <a href="https://www.w3schools.com/colors/colors_picker.asp">rgb颜色参数</a></p>
+<div class="hlcode"><pre><span class="nt">a</span><span class="nd">:link</span> <span class="p">{</span>
+ <span class="k">color</span><span class="o">:</span> <span class="m">#0000ff</span><span class="p">;</span>
+ <span class="k">text-decoration</span><span class="o">:</span> <span class="k">none</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="nd">:visited</span> <span class="p">{</span>
+ <span class="k">color</span><span class="o">:</span> <span class="m">#990099</span><span class="p">;</span>
+ <span class="k">text-decoration</span><span class="o">:</span> <span class="k">none</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="nd">:hover</span> <span class="p">{</span>
+ <span class="k">color</span><span class="o">:</span> <span class="m">#ff0000</span><span class="p">;</span>
+ <span class="k">text-decoration</span><span class="o">:</span> <span class="k">underline</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="nd">:active</span> <span class="p">{</span>
+ <span class="k">color</span><span class="o">:</span> <span class="m">#ff7f24</span><span class="p">;</span>  
+ <span class="k">text-decoration</span><span class="o">:</span> <span class="k">underline</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-06 23:03:21</p>
+      </span>
+    </div>
+  </body>
+</html>
