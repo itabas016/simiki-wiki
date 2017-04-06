@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Linux Command扫盲点 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#command">command</a>&nbsp;&#187;&nbsp;Linux Command扫盲点
+    <span class="updated">Updated&nbsp;
+      2017-04-07 01:22:19
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Linux Command扫盲点</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">日常快捷系</a></li>
+<li><a href="#su-sudo">su sudo相关系</a></li>
+<li><a href="#_2">实用终端系</a></li>
+</ul>
+</div>
+<h2 id="_1">日常快捷系</h2>
+<ul>
+<li><code>CTRL + U</code> – 剪切光标前的内容</li>
+<li><code>CTRL + K</code> – 剪切光标至行末的内容</li>
+<li><code>CTRL + Y</code> – 粘贴</li>
+<li><code>CTRL + E</code> – 移动光标到行末</li>
+<li><code>CTRL + A</code> – 移动光标到行首</li>
+<li><code>CTRL + W</code> – 剪切光标前一个单词</li>
+<li><code>ALT + F</code> – 跳向下一个空格</li>
+<li><code>ALT + B</code> – 跳回上一个空格</li>
+<li><code>ALT + Backspace</code> – 删除前一个单词</li>
+<li><code>Shift + Insert</code> – 向终端内粘贴文本</li>
+</ul>
+<h2 id="su-sudo">su sudo相关系</h2>
+<ul>
+<li>su</li>
+</ul>
+<p>可译为switch user</p>
+<ul>
+<li>su -</li>
+</ul>
+<p>切换到specific user下执行相关命令</p>
+<ul>
+<li>sudo</li>
+</ul>
+<p>可译为Super-User-DO, 当然不同的linux内核也有所区别, 详细可以参照<code>/etc/sudoers</code>的配置</p>
+<ul>
+<li>sudo su</li>
+</ul>
+<p>先看下详细的解释：</p>
+<p>The often-used sudo su combination works as follows: first sudo asks you for your password, and, if you're allowed to do so, invokes the next command (su) as a super-user. Because su is invoked by root, it does not require you to enter the target user's password. So, sudo su allows you to open a shell as another user (including root), if you're allowed super-user access by the <code>/etc/sudoers</code> file</p>
+<ul>
+<li>sudo -i</li>
+</ul>
+<p>侧重于acquires the root user's environment</p>
+<p>Run the shell specified by the target user's password database entry as a login shell.  This means that login-specific resource files such as .profile or .login will be read by the shell.  If a command is specified, it is passed to the shell for execution via the shell's -c option.  If no command is specified, an interactive shell is executed.  sudo attempts to change to that user's home directory before running the shell.  The command is run with an environment similar to the one a user would receive at log in.  The Command Environment section in the sudoers(5) manual documents how the -i option affects the environment in which a command is run when the sudoers policy is in use.</p>
+<ul>
+<li>sudo -s</li>
+</ul>
+<p>主要是runs a shell with root privileges</p>
+<p>Run the shell specified by the SHELL environment variable if it is set or the shell specified by the invoking user's password database entry.  If a command is specified, it is passed to the shell for execution via the shell's -c option.  If no command is specified, an interactive shell is executed.</p>
+<h2 id="_2">实用终端系</h2>
+<ul>
+<li><code>nohup</code> 执行命令如要耗费长时间 可加此参数, 让提交的命令忽略<code>hangup</code>信号, 可再后台运行。 </li>
+</ul>
+<p>Sample: <code>nohup wget xxxxxx &amp;</code>, 如果重定向输出文件 <code>nohup wget xxxxxx &gt; output.log 2&gt;&amp;1 &amp;</code></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-07 01:21:40</p>
+      </span>
+    </div>
+  </body>
+</html>

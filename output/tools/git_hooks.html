@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Git Hooks快捷使用 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#tools">tools</a>&nbsp;&#187;&nbsp;Git Hooks快捷使用
+    <span class="updated">Updated&nbsp;
+      2017-04-06 23:05:01
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Git Hooks快捷使用</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#quick-start">Quick Start</a><ul>
+<li><a href="#prepare-vps">Prepare vps</a></li>
+<li><a href="#configure-repo">Configure repo</a></li>
+<li><a href="#configure-git-hooks">Configure git hooks</a></li>
+<li><a href="#configure-nginx">Configure nginx</a></li>
+<li><a href="#restart-service">Restart service</a></li>
+<li><a href="#configure-blog-yml">Configure blog yml</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="quick-start">Quick Start</h2>
+<p>通过git hooks快速将blog push到vps, 懒人必备。</p>
+<h3 id="prepare-vps">Prepare vps</h3>
+<div class="hlcode"><pre><span class="c"># add git user and grant sudo</span>
+addusr git
+
+<span class="c"># if your OS is debian/ubuntu</span>
+gpasswd -a git sudo
+
+<span class="c"># else centos (precondition: enable wheel group have sudo privileges)</span>
+usermod -aG wheel git
+
+<span class="c"># upload your ssh key</span>
+ssh-copy-id -i ~/.ssh/id_rsa.pub git@ip<span class="o">(</span>xxx.xxx.xxx.xxx<span class="o">)</span>
+
+<span class="c"># prepare git and nginx env</span>
+sudo apt-get install git-core nginx
+</pre></div>
+
+
+<h3 id="configure-repo">Configure repo</h3>
+<div class="hlcode"><pre><span class="c"># configure git repo</span>
+mkdir /home/git/wiki.git
+<span class="nb">cd</span> /home/git/wiki.git/
+git init --bare
+
+<span class="c"># configure wiki site</span>
+mkdir /var/www/wiki
+
+<span class="c"># chown folder owner to git</span>
+chown git:git -R /var/www/wiki
+</pre></div>
+
+
+<h3 id="configure-git-hooks">Configure git hooks</h3>
+<div class="hlcode"><pre><span class="c"># vim post-receive file</span>
+<span class="nb">cd</span> /home/git/wiki.git/hooks
+vim post-receive
+
+<span class="c">#!/bin/bash</span>
+<span class="nv">GIT_REPO</span><span class="o">=</span>/home/git/wiki.git
+<span class="nv">TMP_GIT_CLONE</span><span class="o">=</span>/tmp/wiki
+<span class="nv">PUBLIC_WWW</span><span class="o">=</span>/var/www/wiki
+rm -rf <span class="k">${</span><span class="nv">TMP_GIT_CLONE</span><span class="k">}</span>
+git clone <span class="nv">$GIT_REPO</span> <span class="nv">$TMP_GIT_CLONE</span>
+rm -rf <span class="k">${</span><span class="nv">PUBLIC_WWW</span><span class="k">}</span>/*
+cp -rf <span class="k">${</span><span class="nv">TMP_GIT_CLONE</span><span class="k">}</span>/* <span class="k">${</span><span class="nv">PUBLIC_WWW</span><span class="k">}</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span class="c"># grant execute privileges</span>
+chmod +x post-receive
+</pre></div>
+
+
+<h3 id="configure-nginx">Configure nginx</h3>
+<div class="hlcode"><pre>vi /etc/nginx/conf.d/wiki.conf
+server <span class="o">{</span>
+  listen         80 ;
+  root /var/www/wiki;
+  server_name wiki.itabas.com;
+  access_log  /var/log/nginx/wiki_access.log;
+  error_log   /var/log/nginx/wiki_error.log;
+  location ~* ^.+<span class="se">\.</span><span class="o">(</span>ico|gif|jpg|jpeg|png<span class="o">)</span><span class="nv">$ </span><span class="o">{</span>
+    root /var/www/wiki;
+    access_log   off;
+    expires      1d;
+  <span class="o">}</span>
+  location ~* ^.+<span class="se">\.</span><span class="o">(</span>css|js|txt|xml|swf|wav<span class="o">)</span><span class="nv">$ </span><span class="o">{</span>
+    root /var/www/wiki;
+    access_log   off;
+    expires      10m;
+  <span class="o">}</span>
+  location / <span class="o">{</span>
+    root /var/www/wiki;
+    <span class="k">if</span> <span class="o">(</span>-f <span class="nv">$request_filename</span><span class="o">)</span> <span class="o">{</span>
+    rewrite ^/<span class="o">(</span>.*<span class="o">)</span><span class="nv">$ </span> /<span class="nv">$1</span> <span class="nb">break</span>;
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="restart-service">Restart service</h3>
+<div class="hlcode"><pre>service nginx restart
+</pre></div>
+
+
+<h3 id="configure-blog-yml">Configure blog yml</h3>
+<p>无论你使用哪个静态博客框架, 基本上都支持一键部署, 详细参数参照<code>_config.yml</code></p>
+<div class="hlcode"><pre><span class="n">deploy</span><span class="o">:</span>
+  <span class="n">type</span><span class="o">:</span> <span class="n">git</span>
+  <span class="n">repo</span><span class="o">:</span> <span class="n">git</span><span class="err">@</span><span class="n">wiki</span><span class="o">.</span><span class="na">itabas</span><span class="o">.</span><span class="na">com</span><span class="o">:</span><span class="n">wiki</span><span class="o">.</span><span class="na">git</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-07 01:21:40</p>
+      </span>
+    </div>
+  </body>
+</html>
