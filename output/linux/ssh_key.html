@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>SSH Key相关问题 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#linux">linux</a>&nbsp;&#187;&nbsp;SSH Key相关问题
+    <span class="updated">Updated&nbsp;
+      2017-04-08 11:32:53
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">SSH Key相关问题</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#summary">Summary</a><ul>
+<li><a href="#generate-ssh-key">Generate ssh key</a></li>
+<li><a href="#configure-public-key-to-server">Configure public key to Server</a></li>
+<li><a href="#keep-safe-authorized_keys">Keep safe authorized_keys</a></li>
+<li><a href="#disable-password-authentication">Disable password authentication</a></li>
+<li><a href="#how-to-use-in-the-tool">How to use in the tool</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="summary">Summary</h2>
+<p>SSH Key分公钥和私钥, 私钥请自己妥善保管, 不要外泄。
+另外采用ssh public key authentication是提升服务器安全与快捷措施之一。</p>
+<h3 id="generate-ssh-key">Generate ssh key</h3>
+<p>以github为例使用ssh-keygen生成相对应的key</p>
+<div class="hlcode"><pre><span class="c"># please make sure .ssh folder is exist</span>
+<span class="nb">cd</span> ~/
+mkdir .ssh
+<span class="nb">cd</span> /.ssh
+
+<span class="c"># use ssh-keygen generate key</span>
+<span class="c"># if you want sign key name please add -f parameter, default is id_rsa</span>
+ssh-keygen -t rsa -b 4096 -C <span class="s2">&quot;your_email@example.com&quot;</span>
+Generating public/private rsa key pair.
+Enter file in which to save the key <span class="o">(</span>/home/git/.ssh/id_rsa<span class="o">)</span>:
+
+<span class="c"># please input your password for private key, default is empty</span>
+Enter passphrase <span class="o">(</span>empty <span class="k">for </span>no passphrase<span class="o">)</span>:
+Enter same passphrase again:
+</pre></div>
+
+
+<h3 id="configure-public-key-to-server">Configure public key to Server</h3>
+<p>上传公钥到server有很多种方式了, 推荐使用<code>ssh-copy-id</code></p>
+<ul>
+<li><code>ssh-copy-id -i ~/.ssh/id_rsa.pub git@ip -p xx</code></li>
+</ul>
+<p>有可能会遇到一些问题比如说: <code>Permission denied (publickey).</code> 或者<code>bash: ssh-copy-id: command not found</code></p>
+<p>If it's permission problem, please check current user whether has execute privilege to .ssh folder
+Else if you use windows command line, maybe you didn't install this tiny script, please execute the below script:</p>
+<p>Maybe is works, good luck for you!</p>
+<div class="hlcode"><pre><span class="nv">GET_ID</span><span class="o">=</span><span class="s2">&quot;cat ${ID_FILE}&quot;</span>
+<span class="o">{</span> <span class="nb">eval</span> <span class="s2">&quot;$GET_ID&quot;</span> ; <span class="o">}</span> | ssh <span class="k">${</span><span class="nv">1</span><span class="p">%:</span><span class="k">}</span> <span class="s2">&quot;umask 077; test -d .ssh || mkdir .ssh ; cat &gt;&gt; .ssh/authorized_keys&quot;</span> <span class="o">||</span> <span class="nb">exit </span>1
+</pre></div>
+
+
+<ul>
+<li><code>scp ~/.ssh/ ~/.ssh/id_rsa.pub -p xx user@ip:</code></li>
+</ul>
+<p>Attention please <code>:</code>, then login server execute:</p>
+<div class="hlcode"><pre>cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+rm ~/.ssh/id_rsa.pub
+chmod 600 ~/.ssh/authorized_keys
+</pre></div>
+
+
+<h3 id="keep-safe-authorized_keys">Keep safe authorized_keys</h3>
+<p>为了保证安全，您应该阻止其他用户添加新的公钥。
+将 authorized_keys 的权限设置为对拥有者只读，其他用户没有任何权限：</p>
+<div class="hlcode"><pre>chmod 400 ~/.ssh/authorized_keys
+</pre></div>
+
+
+<h3 id="disable-password-authentication">Disable password authentication</h3>
+<p>采用公钥登录server后, 最好禁用密码登录.</p>
+<div class="hlcode"><pre>vim /etc/ssh/sshd_config
+<span class="c"># set PasswordAuthentication value is no</span>
+RSAAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+
+<span class="c"># restart sshd service</span>
+service sshd restart
+</pre></div>
+
+
+<h3 id="how-to-use-in-the-tool">How to use in the tool</h3>
+<ul>
+<li>使用 alias</li>
+</ul>
+<div class="hlcode"><pre><span class="nv">$ </span>cat ~/.bash_profile
+<span class="nb">alias </span>ssh vps-gce <span class="o">=</span><span class="s1">&#39;ssh itabas016@xxx.xxx.xxx.xxx&#39;</span>
+</pre></div>
+
+
+<ul>
+<li>在 ssh client端import public key, 比如Putty, SecureCRT, XShell</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-08 13:44:09</p>
+      </span>
+    </div>
+  </body>
+</html>
