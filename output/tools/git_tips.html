@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Git command补漏 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#tools">tools</a>&nbsp;&#187;&nbsp;Git command补漏
+    <span class="updated">Updated&nbsp;
+      2017-04-08 22:11:04
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Git command补漏</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#gitcommand">Git容易忘的command</a><ul>
+<li><a href="#git-xxx-bare">git xxx --bare</a></li>
+<li><a href="#git-remote-xxx">git remote xxx</a></li>
+<li><a href="#git-diff-xxx">git diff xxx</a></li>
+<li><a href="#git-tag-xxx">git tag xxx</a></li>
+<li><a href="#git-merge-xxx">git merge xxx</a></li>
+<li><a href="#git-reset-xxx">git reset xxx</a></li>
+<li><a href="#git-commit-xxx">git commit xxx</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="gitcommand">Git容易忘的command</h2>
+<h3 id="git-xxx-bare">git xxx --bare</h3>
+<div class="hlcode"><pre><span class="c"># git init empty repo only with .git element</span>
+git init --bare
+
+<span class="c"># git clone repo with all the git related revision history</span>
+git clone --bare wiki wiki.git
+
+<span class="c"># previous step git clone with bare equals the below command</span>
+cp -Rf wiki/.git wiki.git
+</pre></div>
+
+
+<h3 id="git-remote-xxx">git remote xxx</h3>
+<div class="hlcode"><pre><span class="c"># git remote add new repo address with specific port</span>
+git remote add origin ssh://git@mydomain.com:12345/home/git/repo.git/
+</pre></div>
+
+
+<h3 id="git-diff-xxx">git diff xxx</h3>
+<div class="hlcode"><pre><span class="c">#  git diff [&lt;options&gt;] [&lt;commit&gt; [&lt;commit&gt;]] [--] [&lt;path&gt;...]</span>
+
+<span class="c"># various ways to check working tree</span>
+git diff
+git diff --cached
+git diff HEAD
+
+<span class="c"># comparing with arbitrary commits</span>
+git diff <span class="nb">test</span>
+git diff HEAD -- ./test
+
+<span class="c"># comparing branches</span>
+git diff xxbranch master
+git diff xxbranch..master
+git diff xxbranch...master
+</pre></div>
+
+
+<h3 id="git-tag-xxx">git tag xxx</h3>
+<div class="hlcode"><pre><span class="c"># create tag</span>
+git tag -a v1.0 -m <span class="s2">&quot;tag message detail&quot;</span>
+
+<span class="c"># show someone tag</span>
+git show v1.0
+
+<span class="c"># push local tags to origin branch</span>
+<span class="c"># just one tag</span>
+git push origin v1.0
+<span class="c"># all the local tags</span>
+git push origin --tags
+</pre></div>
+
+
+<h3 id="git-merge-xxx">git merge xxx</h3>
+<div class="hlcode"><pre><span class="c">#  git merge [&lt;options&gt;] [&lt;commit&gt;...]</span>
+<span class="c">#  or: git merge [&lt;options&gt;] &lt;msg&gt; HEAD &lt;commit&gt;</span>
+
+git merge hotfix
+git merge fixes enhancements
+git merge --no-commit tempbranch
+
+<span class="c"># if has conflict, use mergetool command</span>
+git mergetool
+git log --merge -p&lt;path&gt;
+git show :1:filename
+</pre></div>
+
+
+<h3 id="git-reset-xxx">git reset xxx</h3>
+<div class="hlcode"><pre><span class="c">#  git reset [--mixed | --soft | --hard | --merge | --keep] [-q] [&lt;commit&gt;]</span>
+<span class="c">#  or: git reset [-q] &lt;tree-ish&gt; [--] &lt;paths&gt;...</span>
+<span class="c">#  or: git reset --patch [&lt;tree-ish&gt;] [--] [&lt;paths&gt;...]</span>
+
+<span class="c"># reset work tree to the last commit</span>
+git reset --bard HEAD
+
+<span class="c"># just reset specific files</span>
+git chechout -- &lt;specific.flie&gt;
+
+<span class="c"># How to fix the issue when after you commit</span>
+<span class="c"># The better way is create new commit to cover issue use revert</span>
+git revert HEAD
+
+<span class="c"># if reset next-to-last commit</span>
+git revert HEAD^ 
+</pre></div>
+
+
+<h3 id="git-commit-xxx">git commit xxx</h3>
+<div class="hlcode"><pre><span class="c"># -a parameter contains git add and git commit</span>
+git commit -a
+
+<span class="c"># -v parameter will display all the diff messages</span>
+git commit -v
+
+<span class="c"># --amend will use the latest commit instead before commit</span>
+git commit --amend -m <span class="s2">&quot;the latest commit with forgot files&quot;</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-19 09:36:21</p>
+      </span>
+    </div>
+  </body>
+</html>
