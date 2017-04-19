@@ -64,8 +64,8 @@ Enter same passphrase again:
 <li><code>ssh-copy-id -i ~/.ssh/id_rsa.pub git@ip -p xx</code></li>
 </ul>
 <p>有可能会遇到一些问题比如说: <code>Permission denied (publickey).</code> 或者<code>bash: ssh-copy-id: command not found</code></p>
-<p>If it's permission problem, please check current user whether has execute privilege to .ssh folder
-Else if you use windows command line, maybe you didn't install this tiny script, please execute the below script:</p>
+<p>If it's permission problem, please check current user whether has execute privilege to <code>.ssh</code> folder</p>
+<p>Else if you use windows command line, maybe you didn't install this tiny script, please execute the below script:</p>
 <p>Maybe is works, good luck for you!</p>
 <div class="hlcode"><pre><span class="nv">GET_ID</span><span class="o">=</span><span class="s2">&quot;cat ${ID_FILE}&quot;</span>
 <span class="o">{</span> <span class="nb">eval</span> <span class="s2">&quot;$GET_ID&quot;</span> ; <span class="o">}</span> | ssh <span class="k">${</span><span class="nv">1</span><span class="p">%:</span><span class="k">}</span> <span class="s2">&quot;umask 077; test -d .ssh || mkdir .ssh ; cat &gt;&gt; .ssh/authorized_keys&quot;</span> <span class="o">||</span> <span class="nb">exit </span>1
@@ -113,14 +113,14 @@ service sshd restart
 
 
 <ul>
-<li>在 ssh client端import public key, 比如Putty, SecureCRT, XShell</li>
+<li>在 ssh client端import public key,这个就比较简单了。常用的客户端比如Putty, SecureCRT, XShell, Mobile client推荐JuiceSSH</li>
 </ul>
     </div>
     <div id="footer">
       <span>
         <p>Copyright © 2017 itabas016.
         Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
-        <p>Site Generated 2017-04-08 13:44:09</p>
+        <p>Site Generated 2017-04-19 09:36:21</p>
       </span>
     </div>
   </body>
