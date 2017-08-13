@@ -30,6 +30,9 @@
 <li><a href="#margin">margin</a></li>
 <li><a href="#box-model">box model</a></li>
 <li><a href="#position">position</a></li>
+<li><a href="#float-clear">float &amp; clear</a></li>
+<li><a href="#percentage">percentage</a></li>
+<li><a href="#responsive-design">responsive design</a></li>
 </ul>
 </div>
 <h2 id="display">display</h2>
@@ -107,13 +110,53 @@
 <p><code>absolute</code> 与 <code>fixed</code> 的表现类似，但是它不是相对于视窗而是相对于_<em>最近的<code>positioned</code>祖先元素_</em>。
 如果绝对定位(position属性的值为absolute)的元素没有positioned祖先元素，那么它是相对于文档的 body 元素，并且它会随着页面滚动而移动。</p>
 </blockquote>
+<h2 id="float-clear">float &amp; clear</h2>
+<p>常用于图片<code>float</code>文字中间, 而<code>clear</code>可以控制它的浮动。</p>
+<p>如果float的图片超出了容器边界，这时候可以借助<code>overflow</code>属性</p>
+<div class="hlcode"><pre><span class="nc">.clearfix</span> <span class="p">{</span>
+  <span class="k">overflow</span><span class="o">:</span> <span class="k">auto</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="percentage">percentage</h2>
+<p>百分比是一种相对于包含块的计量单位.</p>
+<div class="hlcode"><pre><span class="nt">article</span> <span class="nt">img</span> <span class="p">{</span>
+  <span class="k">float</span><span class="o">:</span> <span class="k">right</span><span class="p">;</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">50</span><span class="o">%</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>当缩小页面时, <code>article</code>和<code>img</code>所占的空间比会以50%减少。<strong>PS.实际应用开发推荐百分比作为计量单位</strong>。</p>
+<h2 id="responsive-design">responsive design</h2>
+<p>这种响应式设计(Responsive Design)对移动开发和不同浏览器或设备呈现不同显示效果的策略，这里就会用到<code>percentage</code>控制布局。</p>
+<p>当浏览器窄到无法容纳侧边栏的菜单时，会将布局显示成一列。</p>
+<p>看例子:--&gt; <a href="../static/sample/sample-responsive.html">demo这里</a></p>
+<div class="hlcode"><pre><span class="k">@media</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span><span class="nt">min-width</span><span class="nd">:600px</span><span class="o">)</span> <span class="p">{</span>
+  <span class="nt">nav</span> <span class="p">{</span>
+    <span class="k">float</span><span class="o">:</span> <span class="k">left</span><span class="p">;</span>
+    <span class="k">width</span><span class="o">:</span> <span class="m">25</span><span class="o">%</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nt">section</span> <span class="p">{</span>
+    <span class="k">margin-left</span><span class="o">:</span> <span class="m">25</span><span class="o">%</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">@media</span> <span class="nt">screen</span> <span class="nt">and</span> <span class="o">(</span><span class="nt">max-width</span><span class="nd">:599px</span><span class="o">)</span> <span class="p">{</span>
+  <span class="nt">nav</span> <span class="nt">li</span> <span class="p">{</span>
+    <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Reference: <a href="http://zh.learnlayout.com/">css-layout</a></p>
     </div>
     <div id="footer">
       <span>
         <p>Copyright © 2017 itabas016.
         Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
-        <p>Site Generated 2017-08-13 21:40:52</p>
+        <p>Site Generated 2017-08-13 22:28:13</p>
       </span>
     </div>
   </body>

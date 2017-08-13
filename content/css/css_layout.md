@@ -71,5 +71,50 @@ main {
 > 如果绝对定位(position属性的值为absolute)的元素没有positioned祖先元素，那么它是相对于文档的 body 元素，并且它会随着页面滚动而移动。
 
 
+## float & clear ##
+常用于图片`float`文字中间, 而`clear`可以控制它的浮动。
+
+如果float的图片超出了容器边界，这时候可以借助`overflow`属性
+
+```css
+.clearfix {
+  overflow: auto;
+}
+```
+
+## percentage ##
+
+百分比是一种相对于包含块的计量单位.
+```css
+article img {
+  float: right;
+  width: 50%;
+}
+```
+当缩小页面时, `article`和`img`所占的空间比会以50%减少。**PS.实际应用开发推荐百分比作为计量单位**。
+
+## responsive design ##
+这种响应式设计(Responsive Design)对移动开发和不同浏览器或设备呈现不同显示效果的策略，这里就会用到`percentage`控制布局。
+
+当浏览器窄到无法容纳侧边栏的菜单时，会将布局显示成一列。
+
+看例子:--> [demo这里](../static/sample/sample-responsive.html)
+
+```css
+@media screen and (min-width:600px) {
+  nav {
+    float: left;
+    width: 25%;
+  }
+  section {
+    margin-left: 25%;
+  }
+}
+@media screen and (max-width:599px) {
+  nav li {
+    display: inline;
+  }
+}
+```
 
 Reference: [css-layout](http://zh.learnlayout.com/)
