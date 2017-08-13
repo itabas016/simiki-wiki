@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>CSS布局 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#css">css</a>&nbsp;&#187;&nbsp;CSS布局
+    <span class="updated">Updated&nbsp;
+      2017-08-13 19:07:01
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">CSS布局</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#display">display</a></li>
+<li><a href="#margin">margin</a></li>
+<li><a href="#box-model">box model</a></li>
+<li><a href="#position">position</a></li>
+</ul>
+</div>
+<h2 id="display">display</h2>
+<p>大多数元素的display属性默认值是<code>block</code>或<code>inline</code>, 一个block元素称之为块级元素，一个inline元素称之为行内元素。</p>
+<ul>
+<li>
+<p>block</p>
+<blockquote>
+<p>例如<code>div, p, form</code>, 这些tag都会开始一行并撑满容器 </p>
+</blockquote>
+</li>
+<li>
+<p>inline</p>
+<blockquote>
+<p>一个行内元素可以在段落内包裹一些文字而不打乱段落的布局，例如<code>span, a</code></p>
+</blockquote>
+</li>
+<li>
+<p>none</p>
+<blockquote>
+<p><code>none</code>不会占据空间, <code>visibility</code>却为之相反</p>
+</blockquote>
+</li>
+<li>
+<p>other style</p>
+<blockquote>
+<p>诸如<code>inline-block</code>, <code>flex</code>, <code>list-item</code> </p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p><strong>PS.参照这里<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/display">display-list</a></strong></p>
+</blockquote>
+<h2 id="margin">margin</h2>
+<p>使用<code>width</code>定义content的实际宽度，另外也可设置<code>max-width</code>可以解决宽度不够，水平滚动条的问题</p>
+<div class="hlcode"><pre><span class="nt">main</span> <span class="p">{</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">600px</span><span class="p">;</span>  
+  <span class="k">max-width</span><span class="o">:</span> <span class="m">600px</span><span class="p">;</span>
+  <span class="k">margin</span><span class="o">:</span> <span class="m">0</span> <span class="k">auto</span><span class="p">;</span> 
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="box-model">box model</h2>
+<p>看例子：</p>
+<div class="hlcode"><pre><span class="nc">.simple</span> <span class="p">{</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">500px</span><span class="p">;</span>
+  <span class="k">margin</span><span class="o">:</span> <span class="m">20px</span> <span class="k">auto</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.fancy</span> <span class="p">{</span>
+  <span class="k">width</span><span class="o">:</span> <span class="m">500px</span><span class="p">;</span>
+  <span class="k">margin</span><span class="o">:</span> <span class="m">20px</span> <span class="k">auto</span><span class="p">;</span>
+  <span class="k">padding</span><span class="o">:</span> <span class="m">50px</span><span class="p">;</span>
+  <span class="k">border-width</span><span class="o">:</span> <span class="m">10px</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><img alt="sample-1" src="../static/images/box-model-sample-1.png" /><img alt="sample-2" src="../static/images/box-model-sample-2.png" /></p>
+<p>由这个例子看出外边框padding撑起的大小导致所占空间不同。如果想要width显示相同大小，这时引入一个新的属性<code>box-sizing</code>它只支持<strong>IE8+</strong>, 样式如下：</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="p">{</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">box</span><span class="o">-</span><span class="n">sizing</span><span class="o">:</span> <span class="k">border</span><span class="o">-</span><span class="n">box</span><span class="p">;</span>
+     <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">box</span><span class="o">-</span><span class="n">sizing</span><span class="o">:</span> <span class="k">border</span><span class="o">-</span><span class="n">box</span><span class="p">;</span>
+          <span class="n">box</span><span class="o">-</span><span class="n">sizing</span><span class="o">:</span> <span class="k">border</span><span class="o">-</span><span class="n">box</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="position">position</h2>
+<p><code>position</code>的属性值有很多, 可以参照这里<a href="../css/css_rules.html#position">css-position</a></p>
+<p><code>static</code>, <code>relative</code> 和 <code>fixed</code>相对比较容易理解。</p>
+<p>这里重点学一下 <code>obsolute</code>, 引用下面的一段原博客的注释</p>
+<blockquote>
+<p><code>absolute</code> 与 <code>fixed</code> 的表现类似，但是它不是相对于视窗而是相对于_<em>最近的<code>positioned</code>祖先元素_</em>。
+如果绝对定位(position属性的值为absolute)的元素没有positioned祖先元素，那么它是相对于文档的 body 元素，并且它会随着页面滚动而移动。</p>
+</blockquote>
+<p>Reference: <a href="http://zh.learnlayout.com/">css-layout</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-08-13 21:40:52</p>
+      </span>
+    </div>
+  </body>
+</html>

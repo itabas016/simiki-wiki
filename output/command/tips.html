@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Linux tips - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#command">command</a>&nbsp;&#187;&nbsp;Linux tips
+    <span class="updated">Updated&nbsp;
+      2017-04-16 22:22:32
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Linux tips</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#grep">强大grep命令</a></li>
+<li><a href="#env">env相关</a></li>
+<li><a href="#system-core">system core相关</a></li>
+<li><a href="#how-to-open-sudo-privilege">How to open sudo privilege</a></li>
+<li><a href="#how-to-open-swap">How to open swap</a></li>
+</ul>
+</div>
+<h2 id="grep">强大grep命令</h2>
+<div class="hlcode"><pre><span class="c"># ignore-case</span>
+grep -i
+
+<span class="c"># use -f search grep result to file, but it&#39;s better use nf, will output result with line number</span>
+cat access.log | grep -nf result.txt
+
+<span class="c"># grep by the header char</span>
+cat access.log | grep ^https
+
+<span class="c"># grep by the end char</span>
+cat access.log | grep .com<span class="err">$</span>
+
+<span class="c"># other grep use regex pattern</span>
+cat access.log | grep <span class="o">[</span>a-Z<span class="o">]{</span>5<span class="o">}</span><span class="se">\.\c</span>om -f site_result.txt
+</pre></div>
+
+
+<h2 id="env">env相关</h2>
+<p><code>export</code> command just works for current environment, but, shell's <code>set</code> command is global env</p>
+<div class="hlcode"><pre><span class="c">#  env [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]</span>
+
+<span class="c"># start with an empty environment</span>
+env -i
+
+<span class="c"># remove variable NAME from env</span>
+env -u
+<span class="c"># modify env: </span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:newPath1:newPAth2
+</pre></div>
+
+
+<p>see a example - change oracle env to 12c:</p>
+<div class="hlcode"><pre>touch oraenv12
+vim oraenv12
+<span class="c"># .bash_profile</span>
+
+<span class="c"># Get the aliases and functions</span>
+<span class="k">if</span> <span class="o">[</span> -f ~/.bashrc <span class="o">]</span>; <span class="k">then</span>
+        . ~/.bashrc
+<span class="k">fi</span>
+
+<span class="c"># User specific environment and startup programs</span>
+<span class="nb">export </span><span class="nv">ORACLE_HOME</span><span class="o">=</span>/u01/app/oracle/product/12.1.0/dbhome_1
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$ORACLE_HOME</span>/bin:<span class="nv">$PATH</span>:<span class="nv">$HOME</span>/bin
+<span class="nb">export </span><span class="nv">ORACLE_SID</span><span class="o">=</span>dev12_1
+
+chmod +x oraenv12
+</pre></div>
+
+
+<h2 id="system-core">system core相关</h2>
+<div class="hlcode"><pre><span class="c"># Check Linux core version</span>
+cat /proc/verion
+Linux version 3.16.0-4-amd64 <span class="o">(</span>debian-kernel@lists.debian.org<span class="o">)</span> <span class="o">(</span>gcc version 4.8.4 <span class="o">(</span>Debian 4.8.4-1<span class="o">)</span> <span class="o">)</span> <span class="c">#1 SMP Debian 3.16.39-1+deb8u2 (2017-03-07)</span>
+
+<span class="c"># other way</span>
+uname -a
+Linux instance-1 3.16.0-4-amd64 <span class="c">#1 SMP Debian 3.16.39-1+deb8u2 (2017-03-07) x86_64 GNU/Linux</span>
+
+<span class="c"># another way</span>
+lsb_release -a
+No LSB modules are available.
+Distributor ID: Debian
+Description:    Debian GNU/Linux 8.7 <span class="o">(</span>jessie<span class="o">)</span>
+Release:        8.7
+Codename:       jessie
+</pre></div>
+
+
+<h2 id="how-to-open-sudo-privilege">How to open sudo privilege</h2>
+<div class="hlcode"><pre><span class="c"># Add user and grant root role:</span>
+Add user itabas
+Passwd *****
+
+Vi /etc/sudoers
+<span class="c"># Add new line below root:</span>
+itabas   <span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span>     ALL
+
+<span class="c"># Other way </span>
+Vi /etc/sudoers
+<span class="c"># Unmark this line:</span>
+%wheel    <span class="nv">ALL</span><span class="o">=(</span>ALL<span class="o">)</span>    ALL this line
+
+<span class="c"># Another way</span>
+
+Vi /etc/passwd change user ID to 0
+itabas:x:0:500:itabas:/home/itabas:/bin/bash
+
+<span class="c"># List user role and group:</span>
+Id itabas
+</pre></div>
+
+
+<h2 id="how-to-open-swap">How to open swap</h2>
+<div class="hlcode"><pre><span class="c"># Open swap memory:</span>
+<span class="c"># normally, set value is twice current memory, now i set 1G</span>
+sudo fallocate -l 1G /swapfile
+
+<span class="c"># lock file privilege</span>
+sudo chmod 600 /swapfile
+
+<span class="c"># generate swap space</span>
+sudo mkswap /swapfile
+
+<span class="c"># open the swap function</span>
+sudo swapon /swapfile
+
+<span class="c"># check is work for swap</span>
+free -m
+
+<span class="c"># Add auto start</span>
+sudo vim /etc/fstab
+<span class="c"># add this record</span>
+/swapfile   none    swap    sw    0   0
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-08-13 21:40:52</p>
+      </span>
+    </div>
+  </body>
+</html>

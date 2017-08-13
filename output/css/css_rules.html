@@ -1,0 +1,392 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>CSS语法梳理 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#css">css</a>&nbsp;&#187;&nbsp;CSS语法梳理
+    <span class="updated">Updated&nbsp;
+      2017-08-12 12:33:43
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">CSS语法梳理</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#css-line-mode">CSS Line Mode(套用方式)</a></li>
+<li><a href="#css-cascading">CSS Cascading(串接)</a></li>
+<li><a href="#css-classid">CSS Class与Id</a></li>
+<li><a href="#css-divspan">CSS Div与Span</a></li>
+<li><a href="#css-length-units">CSS Length Units(长度单位))</a></li>
+<li><a href="#css-box-mode">CSS Box Mode(盒子模式)</a></li>
+<li><a href="#css-margin">CSS Margin</a></li>
+<li><a href="#css-border">CSS Border</a><ul>
+<li><a href="#border-style">border-style</a></li>
+<li><a href="#border-width">border-width</a></li>
+<li><a href="#border-color">border-color</a></li>
+<li><a href="#border-child">border-child</a></li>
+</ul>
+</li>
+<li><a href="#css-padding">CSS Padding</a></li>
+<li><a href="#css-background">CSS Background</a></li>
+<li><a href="#css-font">CSS Font</a></li>
+<li><a href="#css-link">CSS Link</a></li>
+<li><a href="#css-list-style">CSS List Style</a></li>
+<li><a href="#css-position">CSS Position</a><ul>
+<li><a href="#position">position</a></li>
+<li><a href="#direction">direction</a></li>
+<li><a href="#overflow">overflow</a></li>
+<li><a href="#z-index">z-index</a></li>
+</ul>
+</li>
+<li><a href="#css-text">CSS Text</a><ul>
+<li><a href="#text-align">text-align</a></li>
+<li><a href="#text-decoration">text-decoration</a></li>
+<li><a href="#text-indent">text-indent</a></li>
+<li><a href="#text-transform">text-transform</a></li>
+</ul>
+</li>
+<li><a href="#css-float-and-clear">CSS Float and Clear</a></li>
+</ul>
+</div>
+<h2 id="css-line-mode">CSS Line Mode(套用方式)</h2>
+<ul>
+<li>行內套用 (Inline)<blockquote>
+<p><code>tag</code>内部直接声明<code>style</code></p>
+</blockquote>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="nt">&lt;p</span> <span class="na">style=</span><span class="s">&#39;font-family:verdana; font-size:15px;&#39;</span><span class="nt">&gt;</span>This is font size 15.<span class="nt">&lt;/p&gt;</span>
+</pre></div>
+
+
+<ul>
+<li>嵌入套用 (Embed)<blockquote>
+<p><code>style</code>嵌入<code>header</code></p>
+</blockquote>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="nt">&lt;head&gt;</span> 
+  <span class="nt">&lt;style </span><span class="na">type=</span><span class="s">&quot;text/css&quot;</span><span class="nt">&gt;</span> 
+    <span class="nt">div</span> <span class="p">{</span> 
+      <span class="k">background-color</span><span class="o">:</span><span class="m">#FF0000</span><span class="p">;</span> 
+    <span class="p">}</span> 
+  <span class="nt">&lt;/style&gt;</span> 
+<span class="nt">&lt;/head&gt;</span>
+</pre></div>
+
+
+<ul>
+<li>外部连接套用 (External Link)<blockquote>
+<p>常用的一种方式，在<code>header</code>里面声明<code>css link</code></p>
+</blockquote>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">stylesheet</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;css/main.css&quot;</span><span class="nt">&gt;</span>
+</pre></div>
+
+
+<ul>
+<li>导入套用 (Import)<blockquote>
+<p>现在已经不怎么用了</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="css-cascading">CSS Cascading(串接)</h2>
+<blockquote>
+<p>若一个<code>html</code>包含多个<code>css</code>, 从高到底的优先级是：</p>
+<ul>
+<li>內行套用的样式表 (Inline stylesheet)</li>
+<li>嵌入套用的样式表 (Embedded stylesheet)</li>
+<li>导入套用的样式表 (Imported stylesheet)</li>
+<li>外部连接套用的样式表 (Linked stylesheet)</li>
+<li>浏览器本身的样式表 (Browser's own stylesheet)</li>
+</ul>
+</blockquote>
+<h2 id="css-classid">CSS Class与Id</h2>
+<blockquote>
+<p>这两者最大的不同，是在于 ID 选择器在一个 HTML 文件中只能被使用一次，而 Class 选择器在一个 HTML 文件中可以被使用多次。第二个不同的地方，是 ID 选择器可以被 Javascript 中的 GetElementByID 函数所使用，而 Class 选择器无法被 Javascript 使用到。</p>
+<p>并沒有什么固定的规则，来決定什么时候要用 ID 及什么时候要用 Class。建议是尽量用 Class，因为最灵活 (同一个 HTML 文件可以利用这类的选择器多次)。唯一的例外，是当你要用 Javascript 的 GetElementByID 函数时。在這个情况下，你就应该要用 ID。</p>
+</blockquote>
+<h2 id="css-divspan">CSS Div与Span</h2>
+<blockquote>
+<p>Div是区块级的容器(block-level container)，在<code>&lt;/div&gt;</code>后会换行。</p>
+<p>Span可以涵盖更细小的元素，常用于调整单一文字样式。在<code>&lt;/span&gt;</code>后不会换行。</p>
+</blockquote>
+<h2 id="css-length-units">CSS Length Units(长度单位))</h2>
+<blockquote>
+<p>Length units in CSS fall under two categories: 相对单位(relative units) and 绝对单位(absolute units).</p>
+</blockquote>
+<ul>
+<li>Relative units include:</li>
+</ul>
+<blockquote>
+<ul>
+<li>px: pixels</li>
+<li>em: em</li>
+<li>ex: 字母高度(height of letter x)</li>
+</ul>
+</blockquote>
+<ul>
+<li>Absolute units include:</li>
+</ul>
+<blockquote>
+<ul>
+<li>in: inches</li>
+<li>cm: centimeters</li>
+<li>mm: millimeters</li>
+<li>pt: points, 1 pt = 1/72 in</li>
+<li>pc: picas, 1 pc = 12 pt</li>
+</ul>
+<p>如果没有注明单位，则默认单位是px(If no unit is specified, the default unit is px).</p>
+</blockquote>
+<p><img alt="css-length-units" src="../static/images/css-length-units.png" /></p>
+<h2 id="css-box-mode">CSS Box Mode(盒子模式)</h2>
+<p>Box Model relevant command:</p>
+<ul>
+<li>Margin</li>
+<li>Border</li>
+<li>Padding</li>
+</ul>
+<p><img alt="css-box-model" src="../static/images/css-box-model.png" /></p>
+<h2 id="css-margin">CSS Margin</h2>
+<blockquote>
+<p><code>margin: [margin-top] [margin-right] [margin-bottom] [margin-left]</code></p>
+<p>共有三种方式设定，分别是长度(length),百分比(oercent),自适应(auto) </p>
+</blockquote>
+<h2 id="css-border">CSS Border</h2>
+<ul>
+<li><code>border-style</code></li>
+<li><code>border-width</code></li>
+<li><code>border-color</code></li>
+<li><code>border-top-, border-left-, border-bottom-, border-right-</code></li>
+</ul>
+<h4 id="border-style">border-style</h4>
+<blockquote>
+<p>边框形状</p>
+</blockquote>
+<p><img alt="css-border-style" src="../static/images/css-border-style.png" /></p>
+<h4 id="border-width">border-width</h4>
+<blockquote>
+<p>边框宽度, <code>border-width: [thin] | [medium] | [thick] | [5px]</code></p>
+</blockquote>
+<h4 id="border-color">border-color</h4>
+<blockquote>
+<p>边框颜色, <code>border-color: [red] | [#0000FF]</code></p>
+</blockquote>
+<h4 id="border-child">border-child</h4>
+<blockquote>
+<p><code>[border-top-] | [border-left-] | [border-bottom-] | [border-right-] style</code> 子属性, 将边框分拆为四条边逐个设置。</p>
+</blockquote>
+<h2 id="css-padding">CSS Padding</h2>
+<blockquote>
+<p>属性值设置和margin相同, 只是用于不同的作用域。</p>
+<p><code>padding: [padding-top] [padding-right] [padding-bottom] [padding-left]</code></p>
+</blockquote>
+<ul>
+<li>padding-top</li>
+<li>padding-right </li>
+<li>padding-bottom </li>
+<li>padding-left</li>
+</ul>
+<p>Examples:</p>
+<p><code>#container1 { padding: 15px 2em 30px 5%; }</code></p>
+<p><code>#container2 { padding: 30px 10em 20px; }</code></p>
+<p><code>#container3 { padding: 10px 5px; }</code></p>
+<p><code>#container4 { padding: 30em; }</code></p>
+<h2 id="css-background">CSS Background</h2>
+<ul>
+<li>background-color</li>
+<li>background-image</li>
+<li>background-repeat</li>
+<li>background-attachment</li>
+<li>background-position</li>
+</ul>
+<p>另外这几个属性常遗忘，参照这里，快速翻阅 --&gt;<a href="../css/css_element_general_reminder.html#bg">background property</a></p>
+<h2 id="css-font">CSS Font</h2>
+<ul>
+<li>font-family</li>
+<li>font-size</li>
+<li>font-weight</li>
+<li>font-style</li>
+<li>font-variant</li>
+</ul>
+<p><code>font-family</code>: 可以设置多个, 根据浏览器支持的字体属性来确定显示哪个属性。</p>
+<blockquote>
+<p><code>p { font-family: Arial, Verdana, "New Times Roman" }</code></p>
+</blockquote>
+<p><code>font-size</code>: 可参照length units, 也可以简单设置 </p>
+<blockquote>
+<p><code>p { font-size: [xx-large] | [x-large] | [large] | [medium] | [small] | [x-small] | [xx-small] }</code></p>
+</blockquote>
+<p><code>font-weight</code>: 设置字体厚度, value: 100~900, 也可以简单设置 </p>
+<blockquote>
+<p><code>p { font-weight: bold | bolder | normal }</code></p>
+</blockquote>
+<p><code>font-style</code>: 设置字体是否为斜体字 </p>
+<blockquote>
+<p><code>p { font-style: italic | oblique }</code></p>
+</blockquote>
+<p><code>font-variant</code>: 设置文字是否以小型大写字体(small caps), 字母都是大写，字体比normal小一些 </p>
+<blockquote>
+<p><code>p { font-variant: small-caps | normal }</code></p>
+</blockquote>
+<h2 id="css-link">CSS Link</h2>
+<ul>
+<li>a:link: 初始样式。</li>
+<li>a:visited: 访问过样式。</li>
+<li>a:hover: 滑过不点击样式。</li>
+<li>a:active: 点击时样式。</li>
+</ul>
+<p>point梳理参照这里，快速翻阅 --&gt;<a href="../css/css_element_general_reminder.html#a">a-link property</a></p>
+<h2 id="css-list-style">CSS List Style</h2>
+<ul>
+<li>list-style-type</li>
+<li>list-style-position</li>
+<li>list-style-image</li>
+<li>list-style</li>
+</ul>
+<p><code>list-style-type</code>: 最常见设定值: </p>
+<blockquote>
+<ul>
+<li>none (无)</li>
+<li>disc (全黑圆圈)</li>
+<li>circle (空心圆圈)</li>
+<li>square (正方形)</li>
+</ul>
+</blockquote>
+<p><code>list-style-position</code>: 属性设定值为 <code>inside | outside</code> 使用outside属于标准缩进</p>
+<p><code>list-style-image</code>: format: <code>list-style-image:url([image_url]);</code></p>
+<h2 id="css-position">CSS Position</h2>
+<ul>
+<li>position</li>
+<li>top</li>
+<li>right</li>
+<li>left</li>
+<li>bottom</li>
+<li>overflow</li>
+<li>z-index</li>
+</ul>
+<h4 id="position">position</h4>
+<ul>
+<li>static (预设值): 这代表元素会被放在预设的地方。如果 position 的值是被设定为 statics 的话，那 top、bottom、left、和 right 的值就都沒有意义了。</li>
+<li>absolute: 这代表元素会被放在浏览器內的某个位置 (依 top、bottom、left、和 right 的值而定)。当使用者将网页往下拉时，元素也会跟著改变位置。</li>
+<li>relative: 这代表元素被放的地方将会与预设的地方有所不同。不同的程度是依照 top、bottom、left、和 right 的值而定。</li>
+<li>fixed: 这代表元素会被放在浏览器內的某个位置 (依 top、bottom、left、和 right 的值而定)。当使用者将网页往下拉时，元素的位置不会改变。</li>
+</ul>
+<h4 id="direction">direction</h4>
+<p>每一个方向(direction: top, right, bottom, left)的位置值可以是长度(length), 百分比(percent)或自适应(auto)</p>
+<div class="hlcode"><pre><span class="nt">p</span> <span class="p">{</span> 
+  <span class="k">position</span><span class="o">:</span><span class="k">relative</span><span class="p">;</span> 
+  <span class="k">top</span><span class="o">:</span><span class="m">10</span><span class="o">%</span><span class="p">;</span> 
+  <span class="k">right</span><span class="o">:</span><span class="m">50px</span><span class="p">;</span>
+  <span class="k">bottom</span><span class="o">:</span> <span class="m">10</span><span class="o">%</span><span class="p">;</span>
+  <span class="k">left</span><span class="o">:</span><span class="m">50px</span><span class="p">;</span>   
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="overflow">overflow</h4>
+<p><code>overflow</code> 用来设定当内容放不下的时候, 采用何种方式显示内容。</p>
+<ul>
+<li>visible: 内容完全呈现，不管放得下还是放不下。</li>
+<li>hidden: 放不下的内容会不显示出来。</li>
+<li>scroll: 无论内容放下放不下，会加上上下左右滚动轴的功能。</li>
+<li>auto: 当内容放不下的时候，会加上滚动轴的功能。 </li>
+</ul>
+<h4 id="z-index">z-index</h4>
+<p><code>z-index</code> 用来决定元素重叠的顺序, 值比较打的那个元素会被放在上面。</p>
+<h2 id="css-text">CSS Text</h2>
+<ul>
+<li>direction</li>
+<li>letter-spacing</li>
+<li>line-height</li>
+<li>text-align</li>
+<li>text-decoration</li>
+<li>text-indent</li>
+<li>text-transform</li>
+<li>word-spacing</li>
+</ul>
+<p><code>direction</code> 用来设定文字的方向</p>
+<blockquote>
+<p><code>p { direction: ltr | rtl }</code> ltr: 从左侧开始input, rtl则相反</p>
+</blockquote>
+<p><code>letter-spacing</code> 用来设定每一个字母之间的空间</p>
+<blockquote>
+<p><code>p { letter-spacing: 5px; }</code></p>
+</blockquote>
+<p><code>word-spacing</code> 用来设定每个字与每个字之间的距离</p>
+<blockquote>
+<p><code>p { word-spacing: 5px; }</code></p>
+</blockquote>
+<p><strong>PS.The difference is word and letter</strong></p>
+<p><code>line-height</code> 用来设定每一行之间的空间</p>
+<blockquote>
+<p><code>p { line-height: 8px; }</code></p>
+</blockquote>
+<h4 id="text-align">text-align</h4>
+<p>文字对齐方式</p>
+<ul>
+<li>left: 靠左对齐</li>
+<li>right：靠右对齐</li>
+<li>center：向中間对齐</li>
+<li>justify：左右对齐</li>
+</ul>
+<h4 id="text-decoration">text-decoration</h4>
+<p>文字装饰(style)</p>
+<ul>
+<li>underline: 文字下加上一条线。</li>
+<li>overline: 文字上加上一条线。</li>
+<li>line-through: 文字中间加上一条线划过去。</li>
+<li>blink: 让文字闪烁。</li>
+</ul>
+<h4 id="text-indent">text-indent</h4>
+<p>每一段文字的第一行前面留多少空间(缩进-indent)</p>
+<blockquote>
+<p><code>p { text-indent: 15px; }</code></p>
+</blockquote>
+<h4 id="text-transform">text-transform</h4>
+<p>控制大小写如何展现</p>
+<ul>
+<li>capitalize：每一个字的第一个字母都以大写展现，其他的字母则不改变。</li>
+<li>uppercase：所有的字母都以大写展现。</li>
+<li>lowercase：所有的字母都以小写展现。</li>
+<li>none：大小写不做任何改变。</li>
+</ul>
+<h2 id="css-float-and-clear">CSS Float and Clear</h2>
+<ul>
+<li>CSS Float</li>
+</ul>
+<blockquote>
+<p><code>span { float: left | right | none }</code> float 会影响整个页面的布局</p>
+</blockquote>
+<ul>
+<li>CSS Clear</li>
+</ul>
+<blockquote>
+<p><code>span { clear: left | right | both | none }</code> 与float相反, 专门抵消float的作用</p>
+</blockquote>
+<p>Reference: <a href="http://www.1keydata.com/css-tutorial/">css-tutorial</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-08-13 21:40:52</p>
+      </span>
+    </div>
+  </body>
+</html>
