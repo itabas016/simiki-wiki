@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>用Google Drive备份Vps数据 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#linux">linux</a>&nbsp;&#187;&nbsp;用Google Drive备份Vps数据
+    <span class="updated">Updated&nbsp;
+      2017-08-26 21:40:12
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">用Google Drive备份Vps数据</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#install-gdrive-client">Install GDrive Client</a></li>
+<li><a href="#access-google-token">Access Google Token</a></li>
+<li><a href="#backup-data">Backup Data</a><ul>
+<li><a href="#backup-docker-data">Backup Docker Data</a></li>
+<li><a href="#backup-database-data">Backup Database Data</a></li>
+</ul>
+</li>
+<li><a href="#upload-file">Upload File</a></li>
+<li><a href="#download-file">Download File</a></li>
+<li><a href="#share-file">Share File</a></li>
+<li><a href="#gdrive-commands">GDrive Commands</a></li>
+</ul>
+</div>
+<p>Recently, I have a plan to order a new vps service, but some data need migration and backup to google drive. So I found a tool <a href="https://github.com/prasmussen/gdrive">gdrive</a>, Let's begin!</p>
+<h2 id="install-gdrive-client">Install GDrive Client</h2>
+<p>This tool can be used across multiple platform, Linux, Raspberry pi, Windows...</p>
+<div class="hlcode"><pre>wget -O https://docs.google.com/uc?id<span class="o">=</span>0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&amp;export<span class="o">=</span>download
+</pre></div>
+
+
+<p><strong>PS: Find a client from <a href="https://github.com/prasmussen/gdrive#downloads">here</a>, I used CentOS x64, select <a href="https://docs.google.com/uc?id=0B3X9GlR6EmbnQ0FtZmJJUXEyRTA&amp;export=download">gdrive-linux-x64 v2.1.0</a></strong></p>
+<p>Then, executable cli script</p>
+<div class="hlcode"><pre>chmod +x gdrive
+</pre></div>
+
+
+<p>And move scipt <code>mv gdrive /usr/local/bin/</code></p>
+<h2 id="access-google-token">Access Google Token</h2>
+<p>Run command <code>gdrive about</code>, If this is your first run gdrive command, it prompt you to link your google drive account and acess token, so copy link to any browser(Chrome) login to your account. It will return a string like <code>Enter verification code: 4/9hsRWERSTsds17gGHS12dpoSJhhslkNMsnkSk41se1gxfB</code>, this token will store <code>~/.gdrive/</code>.</p>
+<h2 id="backup-data">Backup Data</h2>
+<p>Totally basic on your bussiness, if you want backup database data, or your website source file or some environment configurations, all of these can be write a script to do this work.</p>
+<p><em>Below, it's a sample:</em></p>
+<h3 id="backup-docker-data">Backup Docker Data</h3>
+<p>Create a bash script <code>backup-docker.sh</code>:</p>
+<div class="hlcode"><pre><span class="c">#!/bin/bash</span>
+
+<span class="nb">cd</span> /var/docker/compose
+
+<span class="c"># stop the containers</span>
+docker-compose stop
+
+<span class="c"># if you are not install p7zip, you can first run yum install p7zip, whether you can use tar command to compress</span>
+<span class="c"># zip them up encrypted (yes, the password has to be after the -p switch with no space)</span>
+yum install p7zip
+7za a -t7z -mx2 -pPassword1234!@#<span class="nv">$ </span>/tmp/docker-backup-<span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%d&#39;</span><span class="k">)</span>.7z /var/docker/
+
+<span class="c"># start the containers</span>
+docker-compose start
+
+<span class="c"># upload to google drive, if you upload to parent folder must add [-p | --parent] id set</span>
+gdrive upload -f /tmp/docker-backup-<span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%d&#39;</span><span class="k">)</span>.7z -p 09KVkjJK83exTfkQ3cEJKFDSkjvadkdghJKDGKnRGJKVD932jkaknvKDVR28 --delete /tmp/docker-backup-<span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%d&#39;</span><span class="k">)</span>.7z
+
+<span class="nb">exit </span>0
+</pre></div>
+
+
+<p>If you use <code>tar</code> command, other part is same:</p>
+<div class="hlcode"><pre><span class="c"># tar the dokuwiki directory</span>
+tar -zcf <span class="s2">&quot;docker-backup-$(date &#39;+%Y-%m-%d&#39;).tar.gz&quot;</span> /var/docker/
+<span class="c"># encrypt the tar</span>
+openssl aes-256-cbc -a -salt -in <span class="s2">&quot;docker-backup-$(date &#39;+%Y-%m-%d&#39;).tar.gz&quot;</span> -out <span class="s2">&quot;docker-backup-$(date &#39;+%Y-%m-%d&#39;).tar.gz.enc&quot;</span> -pass <span class="s1">&#39;pass:Password1234!@#$&#39;</span>
+</pre></div>
+
+
+<p>Then, create a <code>crontab</code> job:</p>
+<div class="hlcode"><pre>chmod +x backup-docker.sh
+<span class="nb">echo</span> <span class="s2">&quot;0 1 * * * root ~/backup-docker.sh&quot;</span> &gt;&gt; /etc/crontab
+</pre></div>
+
+
+<h3 id="backup-database-data">Backup Database Data</h3>
+<p>See the dump sql script(eg. use mysqldump):</p>
+<div class="hlcode"><pre><span class="c"># dump all databases</span>
+mysqldump --all-databases &gt; /tmp/dump.sql
+
+<span class="c"># dump only specify databases</span>
+mysqldump --databases blog wordpress q2a &gt; /tmp/dump.sql
+
+<span class="c"># dump specify tables from database</span>
+mysqldump blog bg_user bg_post bg_comment &gt; /tmp/dump.sql
+</pre></div>
+
+
+<p>Then, compress dump file and encrypt file:</p>
+<div class="hlcode"><pre>tar -zcf /tmp/mysql-backup-<span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%d&#39;</span><span class="k">)</span>.tar.gz /tmp/dump.sql
+openssl aes-256-cbc -a -salt -in /tmp/mysql-backup-<span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%d&#39;</span><span class="k">)</span>.tar.gz -out /tmp/mysql-backup-<span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%d&#39;</span><span class="k">)</span>.tar.gz.enc -pass <span class="s1">&#39;pass:Password1234!@#$&#39;</span>
+</pre></div>
+
+
+<p>In the end, run gdrive upload:</p>
+<div class="hlcode"><pre>gdrive upload -f /tmp/mysql-backup-<span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%d&#39;</span><span class="k">)</span>.tar.gz.enc -p 09KVkjJK83exTfkQ3cEJKFDSkjvadkdghJKDGKnRGJKVD932jkaknvKDVR28 --delete /tmp/mysql-backup-<span class="k">$(</span>date <span class="s1">&#39;+%Y-%m-%d&#39;</span><span class="k">)</span>.tar.gz
+</pre></div>
+
+
+<h2 id="upload-file">Upload File</h2>
+<p>From the sample, you know how to use upload command, It's very simple, the detail command parameter see <a href="#gdrive-command">here</a></p>
+<div class="hlcode"><pre>gdrive upload -f /var/www/html/*
+</pre></div>
+
+
+<h2 id="download-file">Download File</h2>
+<p>First, run <code>gdrive list</code>, it will show GDrive file list:</p>
+<div class="hlcode"><pre>Id                              Title                              Size      Created
+0B-Jkp8Bk3zNcTkQxeGxZaFRiMzA    vps-backup-2017-08-26.tar.gz.enc   55.3 MB   2017-08-26 10:36:15
+0B-Jkp8Bk3zNcMXJBQ0tUdk5XOVU    tools                              0.0 B     2017-08-26 09:21:40
+0B-Jkp8Bk3zNcQnozOWV5OFRyNWs    temp                               0.0 B     2017-08-26 09:21:25
+0B-Jkp8Bk3zNcc3RhcnRlcl9maWxl   Getting started                    1.6 MB    2016-03-30 01:48:28
+</pre></div>
+
+
+<p>And then, select your file <code>Id</code> and run download command, thats it!</p>
+<div class="hlcode"><pre>gdrive download -i 0B-Jkp8Bk3zNcc3RhcnRlcl9maWxl
+</pre></div>
+
+
+<h2 id="share-file">Share File</h2>
+<p>It's simliar with download command <code>gdrive share -i 0B-Jkp8Bk3zNcc3RhcnRlcl9maWxl</code></p>
+<h2 id="gdrive-commands">GDrive Commands</h2>
+<div class="hlcode"><pre>Usage: gdrive <span class="o">[</span>global options<span class="o">]</span> &lt;verb&gt; <span class="o">[</span>verb options<span class="o">]</span>
+
+Global options:
+        -a, --advanced     Advanced Mode -- lets you specify your own oauth client id and secret on setup
+        -c, --config       Set application path where config and token is stored. Defaults to ~/.gdrive
+        -v, --version      Print version
+        -h, --help         Show this <span class="nb">help</span>
+
+Verbs:
+    delete:
+        -i, --id           File Id <span class="o">(</span>*<span class="o">)</span>
+    download:
+        -i, --id           File Id <span class="o">(</span>*<span class="o">)</span>
+            --format       Download file in a specified format <span class="o">(</span>needed <span class="k">for </span>google docs<span class="o">)</span>
+        -s, --stdout       Write file content to stdout
+            --force        Overwrite existing file
+            --pop          Download latest file, and remove it from google drive
+    folder:
+        -t, --title        Folder to create <span class="o">(</span>*<span class="o">)</span>
+        -p, --parent       Parent Id of the folder
+            --share        Share created folder
+    info:
+        -i, --id           File Id <span class="o">(</span>*<span class="o">)</span>
+            --bytes        Show size in bytes
+    list:
+        -m, --max          Max results
+            --include-docs Include google docs in listing
+        -t, --title        Title filter
+        -q, --query        Query <span class="o">(</span>see https://developers.google.com/drive/search-parameters<span class="o">)</span>
+        -s, --shared       Show shared status <span class="o">(</span>Note: this will generate 1 http req per file<span class="o">)</span>
+        -n, --noheader     Do not show the header
+            --bytes        Show size in bytes
+    quota:
+            --bytes        Show size in bytes
+    share:
+        -i, --id           File Id <span class="o">(</span>*<span class="o">)</span>
+    unshare:
+        -i, --id           File Id <span class="o">(</span>*<span class="o">)</span>
+    upload:
+        -f, --file         File or directory to upload <span class="o">(</span>*<span class="o">)</span>
+        -s, --stdin        Use stdin as file content <span class="o">(</span>*<span class="o">)</span>
+        -t, --title        Title to give uploaded file. Defaults to filename
+        -p, --parent       Parent Id of the file
+            --share        Share uploaded file
+            --mimetype     The MIME <span class="nb">type</span> <span class="o">(</span>default will try to figure it out<span class="o">)</span>
+            --convert      File will be converted to Google Docs format
+        -C, --chunksize    Set chunk size in bytes. Minimum is 262144, default is 4194304. Recommended to be a power of two.
+    url:
+        -i, --id           File Id <span class="o">(</span>*<span class="o">)</span>
+        -p, --preview      Generate preview url <span class="o">(</span>default<span class="o">)</span>
+        -d, --download     Generate download url
+</pre></div>
+
+
+<p>Reference:</p>
+<p><a href="https://timothy-quinn.com/backing-up-files-to-google-drive-via-the-cli/">Backing up Files to Google Drive via the CLI</a></p>
+<p><a href="http://bashworkz.com/google-drive-linux-client-upload-download-share-a-file/">Install Gdrive Google Drive Linux Client – Upload/Download/Share a file</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-08-28 00:08:09</p>
+      </span>
+    </div>
+  </body>
+</html>

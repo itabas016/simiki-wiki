@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Vps性能检测 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#linux">linux</a>&nbsp;&#187;&nbsp;Vps性能检测
+    <span class="updated">Updated&nbsp;
+      2017-08-27 21:19:01
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Vps性能检测</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#vps">Vps 指标</a><ul>
+<li><a href="#bench-detail">Bench Detail</a></li>
+<li><a href="#cpu">Cpu</a></li>
+<li><a href="#disk-io">Disk IO</a></li>
+<li><a href="#network">Network</a></li>
+<li><a href="#unix-bench-score">Unix Bench Score</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<blockquote>
+<p>折腾了两天Vps, 真可恨呢~</p>
+</blockquote>
+<p>几个月前挂了个hello-world在gce上, 也忘记关了. 今天一看账单扣了我60多刀, 我滴个神呢. 白花花的银子就这么没了. </p>
+<p>可是手贱又把gcp的内存从1.7改成了0.6, 想着能省就省点吧. 鬼知道重新分配了个ip, 原来直联日本, 现在搞得要绕美国了, 延迟老高了. 哎~</p>
+<p><img alt="detail-trace" src="../static/images/vps-trace-detail-1.png" /></p>
+<p><img alt="trace-gui" src="../static/images/vps-trace-detail-2.png" /></p>
+<blockquote>
+<p>不管怎么说gcp好是好，可还是太贵了, 于是又想着以前的Bandwagon Vps内存256还是OVZ的, 反正也快到期了, 要不换一个大点内存的. 就选了个年付LA直联中国的.</p>
+<p>鬼知道测试下来的指标太不满意了. 广大同胞们都把Bandwagon玩坏了. 哎~</p>
+</blockquote>
+<p><img alt="detail-trace" src="../static/images/vps-d-trace-detail-3.png" /></p>
+<p><img alt="trace-gui" src="../static/images/vps-d-trace-detail-4.png" /></p>
+<h2 id="vps">Vps 指标</h2>
+<h3 id="bench-detail">Bench Detail</h3>
+<p>直接用<a href="https://teddysun.com/444.html">秋水逸冰</a>的<a href="https://github.com/teddysun/across/blob/master/bench.sh">bench.sh</a>脚本跑出的结果很是一般:</p>
+<p><img alt="bench-detail" src="../static/images/vps-d-bench-detail.png" /></p>
+<p>于是又单独查看了Cpu, Memory, Disk等各项参数, swap也没开, 硬盘读写简直了...</p>
+<h3 id="cpu">Cpu</h3>
+<div class="hlcode"><pre>cat /proc/cpuinfo
+</pre></div>
+
+
+<p><img alt="vps-d-cpu" src="../static/images/vps-d-cpu.png" /></p>
+<h3 id="disk-io">Disk IO</h3>
+<div class="hlcode"><pre>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span><span class="nb">test </span><span class="nv">bs</span><span class="o">=</span>64k <span class="nv">count</span><span class="o">=</span>4k <span class="nv">oflag</span><span class="o">=</span>dsync
+dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span><span class="nb">test </span><span class="nv">bs</span><span class="o">=</span>8k <span class="nv">count</span><span class="o">=</span>256k <span class="nv">conv</span><span class="o">=</span>fdatasync
+</pre></div>
+
+
+<p><img alt="vps-d-io" src="../static/images/vps-d-io.png" /></p>
+<p>相比之前的vps简直差太多了, LA机房直联中国严重超售了: </p>
+<p><img alt="vps-io" src="../static/images/vps-io.png" /></p>
+<h3 id="network">Network</h3>
+<p>首先测试vps的download和upload, <a href="https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py">speedtest.py</a></p>
+<div class="hlcode"><pre>wget --no-check-certificate https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
+chmod +x speedtest.py
+./speedtest.py
+</pre></div>
+
+
+<p><img alt="vps-d-speedtest" src="../static/images/vps-d-speedtest.png" /></p>
+<p>然后用mtr分别测试联通和电信：</p>
+<p><img alt="vps-d-mtr" src="../static/images/vps-d-mtr.png" /></p>
+<h3 id="unix-bench-score">Unix Bench Score</h3>
+<p>最后用<a href="https://teddysun.com/245.html">秋水逸冰</a>的<a href="https://github.com/teddysun/across/raw/master/unixbench.sh">unixbench.sh</a>脚本跑分测试了一下：</p>
+<div class="hlcode"><pre>wget --no-check-certificate https://github.com/teddysun/across/raw/master/unixbench.sh
+chmod +x unixbench.sh
+./unixbench.sh
+</pre></div>
+
+
+<p><img alt="vps-d-unix-bench" src="../static/images/vps-d-unix-bench.png" /></p>
+<p>跑分倒还可以，只是这个磁盘读写不能让人满意. 现在倒是不知道该如何取舍了~</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-08-28 00:08:09</p>
+      </span>
+    </div>
+  </body>
+</html>
