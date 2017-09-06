@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Vps开启bbr加速 - Wiki</title>
+    <meta name="keywords" content="wiki, commands, notes, memos, reminders,"/>
+    <meta name="description" content="Everything is fake."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#tools">tools</a>&nbsp;&#187;&nbsp;Vps开启bbr加速
+    <span class="updated">Updated&nbsp;
+      2017-08-29 23:06:12
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Vps开启bbr加速</div>
+
+  <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#one-step">One-Step</a></li>
+<li><a href="#check-bbr">Check-BBR</a></li>
+<li><a href="#upgrade-kernel">Upgrade-Kernel</a></li>
+</ul>
+</div>
+<h2 id="one-step">One-Step</h2>
+<blockquote>
+<p>Quick installation(懒人一键安装)</p>
+</blockquote>
+<p><strong>PS:</strong> Requirments</p>
+<ul>
+<li>OS: CentOS 6+，Debian 7+，Ubuntu 12+</li>
+<li>Virtual platform: Except OpenVZ, such as KVM, Xen, VMware etc.</li>
+<li>Memory: ≥128M</li>
+</ul>
+<div class="hlcode"><pre>wget --no-check-certificate https://github.com/teddysun/across/raw/master/bbr.sh
+chmod +x bbr.sh
+./bbr.sh
+</pre></div>
+
+
+<h2 id="check-bbr">Check-BBR</h2>
+<div class="hlcode"><pre><span class="c"># check linux kernel version</span>
+<span class="o">[</span>root@vps-d ~<span class="o">]</span><span class="c"># uname -a</span>
+Linux vps-d 4.10.4-1.el7.elrepo.x86_64 <span class="c">#1 SMP Sat Mar 18 12:50:10 EDT 2017 x86_64 x86_64 x86_64 GNU/Linux</span>
+
+<span class="c"># check network info</span>
+<span class="o">[</span>root@vps-d ~<span class="o">]</span><span class="c"># sysctl net.ipv4.tcp_available_congestion_control</span>
+net.ipv4.tcp_available_congestion_control <span class="o">=</span> bbr cubic reno
+<span class="o">[</span>root@vps-d ~<span class="o">]</span><span class="c"># sysctl net.ipv4.tcp_congestion_control</span>
+net.ipv4.tcp_congestion_control <span class="o">=</span> bbr
+<span class="o">[</span>root@vps-d ~<span class="o">]</span><span class="c"># sysctl net.core.default_qdisc</span>
+net.core.default_qdisc <span class="o">=</span> fq
+
+<span class="c"># check bbr module is load</span>
+<span class="o">[</span>root@vps-d ~<span class="o">]</span><span class="c"># lsmod | grep bbr</span>
+tcp_bbr                16384  24
+</pre></div>
+
+
+<p><strong>PS:</strong> If the kernel version less than 4.12, you need upgrade.</p>
+<h2 id="upgrade-kernel">Upgrade-Kernel</h2>
+<p>Sample with CentOS 7:</p>
+<div class="hlcode"><pre><span class="c"># add repo and install</span>
+rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+yum --enablerepo<span class="o">=</span>elrepo-kernel install kernel-ml kernel-ml-devel -y
+
+<span class="c"># check kernel install</span>
+rpm -qa | grep kernel
+
+<span class="c"># update grub system</span>
+egrep ^menuentry /etc/grub2.cfg | cut -f 2 -d <span class="se">\&#39;</span>
+<span class="c"># default 0</span>
+<span class="c"># Run by the first core(表示第一个内核设置为默认运行)</span>
+grub2-set-default 0
+
+<span class="c"># restart</span>
+reboot
+</pre></div>
+
+
+<p>Reference: </p>
+<p><a href="https://github.com/iMeiji/shadowsocks_install/wiki/%E5%BC%80%E5%90%AFTCP-BBR%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95">开启TCP BBR拥塞控制算法</a></p>
+<p><a href="https://teddysun.com/489.html">一键安装最新内核并开启 BBR 脚本</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 itabas016.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-09-07 00:50:30</p>
+      </span>
+    </div>
+  </body>
+</html>

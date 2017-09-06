@@ -30,6 +30,13 @@ date: 2017-08-27 21:19:01
 
 直接用[秋水逸冰](https://teddysun.com/444.html)的[bench.sh](https://github.com/teddysun/across/blob/master/bench.sh)脚本跑出的结果很是一般:
 
+```bash
+wget -qO- bench.sh | bash
+
+or
+curl -Lso- bench.sh | bash
+```
+
 ![bench-detail](../static/images/vps-d-bench-detail.png)
 
 于是又单独查看了Cpu, Memory, Disk等各项参数, swap也没开, 硬盘读写简直了...
